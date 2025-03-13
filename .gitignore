@@ -1,2 +1,11 @@
 .venv/
-captured_images/
+
+raw_data/
+runs/
+
+train_data/*
+!train_data/data.yaml
+
+yolov8n.pt
+yolo_glasses.pt
+cnn_glasses.h5

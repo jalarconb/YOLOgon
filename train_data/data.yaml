@@ -1,0 +1,6 @@
+path: train_data
+train: images/train
+val: images/val
+
+nc: 2
+names: ["no_glasses", "glasses"]
