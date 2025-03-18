@@ -6,7 +6,7 @@ import os
 import cv2
 
 
-def load_data(image_dir, label_dir, img_size=(640, 640)):
+def load_data(image_dir, label_dir, img_size=(128, 128)):
     data = []
     labels = []
     image_files = os.listdir(image_dir)
@@ -28,8 +28,10 @@ def load_data(image_dir, label_dir, img_size=(640, 640)):
         data.append(img)
         labels.append(label)
 
-    data = np.array(data) / 255.0
-    labels = np.array(labels)
+    data = np.array(data, dtype=np.float32) / 255.0
+    labels = np.array(labels, dtype=np.int32)
+
+    print("Distribución de clases en dataset:", np.bincount(labels))
     return data, labels
 
 
@@ -43,24 +45,37 @@ val_labels = "train_data/labels/val"
 x_train, y_train = load_data(train_images, train_labels)
 x_val, y_val = load_data(val_images, val_labels)
 
-# Definir modelo CNN
+# CNN Model (4*conv, 1*flatten, 1*output)
 model = keras.Sequential(
     [
-        layers.Conv2D(32, (3, 3), activation="relu", input_shape=(640, 640, 3)),
+        layers.Conv2D(32, (3, 3), activation="relu", input_shape=(128, 128, 3)),
         layers.MaxPooling2D(2, 2),
         layers.Conv2D(64, (3, 3), activation="relu"),
         layers.MaxPooling2D(2, 2),
+        layers.Conv2D(128, (3, 3), activation="relu"),
+        layers.MaxPooling2D(2, 2),
+        layers.Conv2D(256, (3, 3), activation="relu"),
+        layers.MaxPooling2D(2, 2),
         layers.Flatten(),
-        layers.Dense(128, activation="relu"),
-        layers.Dense(1, activation="sigmoid"),
+        layers.Dense(256, activation="relu"),
+        layers.Dropout(0.5),  # Lowers overfitting
+        layers.Dense(1, activation="sigmoid"),  # Binary classification: Glasses or no glasses
     ]
 )
 
-# Compilar modelo
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+# Compile model
+model.compile(
+    optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"]
+)
 
-# Entrenar modelo
-model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=8)
+# Train Model
+model.fit(
+    x_train,
+    y_train,
+    validation_data=(x_val, y_val),
+    epochs=10,
+    batch_size=32
+)
 
 # Guardar modelo
 model.save("cnn_glasses.h5")

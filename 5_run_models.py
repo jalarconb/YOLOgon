@@ -8,7 +8,7 @@ model_yolo = YOLO("yolo_glasses.pt")
 model_cnn = tf.keras.models.load_model("cnn_glasses.h5")
 
 # Dimensión esperada para la CNN
-IMG_SIZE = (640, 640)
+IMG_SIZE = (128, 128)
 
 
 def preprocess_cnn(frame):
@@ -49,6 +49,11 @@ while cap.isOpened():
     cnn_prediction = (
         "Glasses" if model_cnn.predict(cnn_input)[0][0] > 0.5 else "No glasses"
     )
+
+    # Dibujar rectángulo en toda la imagen si la CNN predice gafas
+    if cnn_prediction == "Glasses":
+        h, w, _ = frame.shape
+        cv2.rectangle(frame, (0, 0), (w, h), (0, 0, 255), 4)  # Rectángulo rojo
 
     # Mostrar resultados en pantalla
     cv2.putText(
