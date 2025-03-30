@@ -3,11 +3,11 @@ import numpy as np
 from ultralytics import YOLO
 import tensorflow as tf
 
-# Cargar modelos
+# Load models
 model_yolo = YOLO("yolo_glasses.pt")
 model_cnn = tf.keras.models.load_model("cnn_glasses.h5")
 
-# Dimensión esperada para la CNN
+# Expected dimension for the CNN
 IMG_SIZE = (128, 128)
 
 
@@ -17,7 +17,7 @@ def preprocess_cnn(frame):
     return np.expand_dims(frame_normalized, axis=0)
 
 
-# Capturar video
+# Capture video
 cap = cv2.VideoCapture(0)
 
 while cap.isOpened():
@@ -25,7 +25,7 @@ while cap.isOpened():
     if not ret:
         break
 
-    # Detección con YOLO
+    # Detection: YOLO
     results = model_yolo(frame)
     yolo_prediction = "No glasses"
     for result in results:
@@ -44,25 +44,25 @@ while cap.isOpened():
                 2,
             )
 
-    # Detección con CNN
+    # Detection: CNN
     cnn_input = preprocess_cnn(frame)
     cnn_prediction = (
         "Glasses" if model_cnn.predict(cnn_input)[0][0] > 0.5 else "No glasses"
     )
 
-    # Dibujar rectángulo en toda la imagen si la CNN predice gafas
+    # CNN Rectangle
     if cnn_prediction == "Glasses":
         h, w, _ = frame.shape
-        cv2.rectangle(frame, (0, 0), (w, h), (0, 0, 255), 4)  # Rectángulo rojo
+        cv2.rectangle(frame, (0, 0), (w, h), (0, 0, 255), 4)
 
-    # Mostrar resultados en pantalla
+    # Print predictions
     cv2.putText(
         frame,
         f"YOLO: {yolo_prediction}",
         (10, 30),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.7,
-        (255, 0, 0),
+        (0, 255, 0),
         2,
     )
     cv2.putText(

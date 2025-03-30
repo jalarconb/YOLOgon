@@ -35,13 +35,13 @@ def load_data(image_dir, label_dir, img_size=(128, 128)):
     return data, labels
 
 
-# Directorios de imágenes y etiquetas
+# Image and label directories
 train_images = "train_data/images/train"
 train_labels = "train_data/labels/train"
 val_images = "train_data/images/val"
 val_labels = "train_data/labels/val"
 
-# Cargar datos
+# Load data
 x_train, y_train = load_data(train_images, train_labels)
 x_val, y_val = load_data(val_images, val_labels)
 
@@ -77,7 +77,7 @@ model.fit(
     batch_size=32
 )
 
-# Guardar modelo
+# Save model
 model.save("cnn_glasses.h5")
 
-print("Entrenamiento completado. Modelo guardado como cnn_glasses.h5")
+print("Training complete. Model saved as cnn_glasses.h5")

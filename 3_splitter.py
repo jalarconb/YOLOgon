@@ -40,7 +40,7 @@ def split_data(
         )
         shutil.copy(os.path.join(source_lbl, lbl), os.path.join(dest_lbl_val, lbl))
 
-    print("Dataset dividido correctamente en entrenamiento y validación.")
+    print("Succesfully split the dataset into training and validation sets.")
 
 
 if __name__ == "__main__":

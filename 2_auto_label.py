@@ -31,7 +31,7 @@ def detect_and_label(image_folder, label_folder, class_id):
                     h_norm = h / height
                     f.write(f"{class_id} {x_center} {y_center} {w_norm} {h_norm}\n")
 
-            print(f"Anotación generada para: {filename}")
+            print(f"Annotation generated for: {filename}")
 
 
 if __name__ == "__main__":
@@ -41,4 +41,4 @@ if __name__ == "__main__":
     detect_and_label(
         "raw_data/images/no_glasses", "raw_data/labels/no_glasses", class_id=0
     )
-    print("Proceso de anotación automática completado.")
+    print("Annotation process completed.")

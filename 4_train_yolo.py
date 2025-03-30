@@ -14,4 +14,4 @@ print("YOLO: Training complete and model saved.")
 # ------------------------
 
 # from ultralytics import settings
-# settings.update({'datasets_dir': '.'})  # Esto forzará a YOLO a buscar en el directorio actual
+# settings.update({'datasets_dir': '.'})  # Forces YOLO to use the current directory as the dataset directory

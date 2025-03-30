@@ -9,8 +9,8 @@ import tensorflow as tf
 import subprocess
 import sys
 
-# Ejecutar el comando pip desde Python
-subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-learn"])
+# Run pip script from Python
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-learn"])
 
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -42,33 +42,34 @@ def load_data(image_dir, label_dir, img_size=(128, 128)):
     labels = np.array(labels)
     return data, labels
 
-# Directorios de imágenes y etiquetas
+
+# Image and label directories
 val_images = "train_data/images/val"
 val_labels = "train_data/labels/val"
 
-# Cargar datos de validación
+# Load validation data
 x_val, y_val = load_data(val_images, val_labels)
 
-# Cargar modelos
+# Load models
 model_cnn = tf.keras.models.load_model("cnn_glasses.h5")
 model_yolo = YOLO("yolo_glasses.pt")
 
-# Predecir con la CNN
+# Predict: CNN
 y_pred_cnn = (model_cnn.predict(x_val) > 0.5).astype(int).flatten()
-y_pred_cnn = y_pred_cnn[:len(y_val)]  # Asegurar que las dimensiones sean iguales
+y_pred_cnn = y_pred_cnn[: len(y_val)]  # Make sure dimensions match
 
-# Verificar las dimensiones de los datos
+# Verify dimensions
 print("Shapes:")
 print("y_val:", y_val.shape)
 print("y_pred_cnn:", y_pred_cnn.shape)
 
-# Evaluación de la CNN
+# Evaluate: CNN
 acc_cnn = accuracy_score(y_val, y_pred_cnn)
 prec_cnn = precision_score(y_val, y_pred_cnn)
 rec_cnn = recall_score(y_val, y_pred_cnn)
 f1_cnn = f1_score(y_val, y_pred_cnn)
 
-# Evaluación de YOLO
+# Evaluate: YOLO
 y_pred_yolo = []
 y_true = []
 
@@ -90,15 +91,21 @@ rec_yolo = recall_score(y_true, y_pred_yolo)
 f1_yolo = f1_score(y_true, y_pred_yolo)
 time_yolo = time_yolo_end - time_yolo_start
 
-# Mostrar resultados
+# Show results
 
-print("\n\n----------------------------------------------------------------------\n\n\n")
+print(
+    "\n\n----------------------------------------------------------------------\n\n\n"
+)
 
 print("\nCNN Performance:")
-print(f"Accuracy: {acc_cnn:.4f}, Precision: {prec_cnn:.4f}, Recall: {rec_cnn:.4f}, F1-score: {f1_cnn:.4f}")
+print(
+    f"Accuracy: {acc_cnn:.4f}, Precision: {prec_cnn:.4f}, Recall: {rec_cnn:.4f}, F1-score: {f1_cnn:.4f}"
+)
 
 print("\nYOLO Performance:")
-print(f"Accuracy: {acc_yolo:.4f}, Precision: {prec_yolo:.4f}, Recall: {rec_yolo:.4f}, F1-score: {f1_yolo:.4f}")
+print(
+    f"Accuracy: {acc_yolo:.4f}, Precision: {prec_yolo:.4f}, Recall: {rec_yolo:.4f}, F1-score: {f1_yolo:.4f}"
+)
 print(f"Inference Time (YOLO): {time_yolo:.2f} sec")
 
 print("\n")
